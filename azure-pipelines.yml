@@ -1,0 +1,136 @@
+# .NET Desktop
+# Build and run tests for .NET Desktop or Windows classic desktop solutions.
+# Add steps that publish symbols, save build artifacts, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/apps/windows/dot-net
+
+schedules:
+- cron: "0 0 * * 3"
+  displayName: Wednesday midnight build
+  branches:
+    include:
+    - main
+  always: true
+
+trigger:
+- main
+- develop
+- feature/*
+- bugfix/*
+
+stages:
+- stage: Build
+  displayName: 'Build and test package'
+
+  jobs:
+  - job: buildAndTest_windows
+    pool:
+      vmImage: 'windows-latest'
+    
+    steps:
+    
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: 'custom'
+        custom: 'tool'
+        arguments: 'install -g dotnet-format --ignore-failed-sources'
+
+    - task: PowerShell@2
+      inputs:
+        filePath: 'build.ps1'
+        arguments: '--target=BuildAndTest'
+
+  - job: buildAndTest_linux
+    dependsOn: buildAndTest_windows
+    pool:
+      vmImage: 'ubuntu-latest'
+
+    steps:
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: 'custom'
+        custom: 'tool'
+        arguments: 'install -g dotnet-format --ignore-failed-sources'
+    
+    - task: ShellScript@2
+      inputs:
+        scriptPath: 'build.sh'
+        args: '--target=BuildAndTest'
+
+  - job: BuildNuGetPackageForDeploy
+    dependsOn:
+    - buildAndTest_windows
+    - buildAndTest_linux
+    pool:
+      vmImage: 'windows-latest'
+
+    steps:
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: 'custom'
+        custom: 'tool'
+        arguments: 'install -g dotnet-format --ignore-failed-sources'
+    
+    - task: PowerShell@2
+      inputs:
+        filePath: 'build.ps1'
+        arguments: '--target=BuildPackage'
+
+    - publish: '$(System.DefaultWorkingDirectory)/.artifacts'
+      artifact: NuGetPackage
+
+- stage: Publish
+  displayName: 'Publish to nuget.org'
+  condition: and(succeeded(), in(variables['build.sourceBranch'], 'refs/heads/main', 'refs/heads/develop'), ne(variables['Build.Reason'], 'Schedule'))
+
+  jobs:
+  - job: publish
+    pool:
+      vmImage: 'windows-latest'
+    steps:
+    - checkout: 'none'
+
+    - download: current
+      artifact: NuGetPackage
+
+    - task: NuGetAuthenticate@1
+      inputs:
+        nuGetServiceConnection: 'queoNuGetOrg'
+
+    - task: NuGetCommand@2
+      inputs:
+        command: push
+        nuGetFeedType: 'external'
+        publishFeedCredentials: 'queoNuGetOrg'
+        packagesToPush: $(Pipeline.Workspace)/**/*.nupkg
+
+  - deployment: DeployToBeta
+    displayName: Deploy to beta
+    dependsOn: publish
+    condition: and(succeeded(), eq(variables['build.sourceBranch'], 'refs/heads/develop'))
+    pool: 
+      vmImage: 'windows-latest'
+    # Creates an environment if it doesn't exist. Seems not to work. the environment must exist.
+    environment: Testing-BetaChannel
+    strategy:
+      # Default deployment strategy, more coming...
+      runOnce:
+        deploy:
+          steps:
+          - checkout: self 
+          - script: echo deployment to beta
+  
+  - deployment: DeployToProd
+    displayName: Deploy to prod
+    dependsOn: publish
+    condition: and(succeeded(), eq(variables['build.sourceBranch'], 'refs/heads/main'))
+    pool: 
+      vmImage: 'windows-latest'
+    # Creates an environment if it doesn't exist.
+    environment: Testing-ReleaseChannel
+    strategy:
+      # Default deployment strategy, more coming...
+      runOnce:
+        deploy:
+          steps:
+          - checkout: self 
+          - script: echo deployment to release
