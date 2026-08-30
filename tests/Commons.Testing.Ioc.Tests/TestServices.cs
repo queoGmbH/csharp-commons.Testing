@@ -31,3 +31,35 @@ public class AsyncDisposableOnlyGreeter : IGreeter, IAsyncDisposable
 
     public ValueTask DisposeAsync() => ValueTask.CompletedTask;
 }
+
+public interface IUnregisteredService
+{
+}
+
+public interface IThrowingService
+{
+}
+
+public class ThrowingService : IThrowingService
+{
+    public ThrowingService()
+    {
+        throw new InvalidOperationException("Konstruktor schlaegt absichtlich fehl.");
+    }
+}
+
+public interface IScopedGreeter : IGreeter
+{
+}
+
+public class ScopedGreeter : IScopedGreeter
+{
+    public string Greet() => "Scoped";
+}
+
+public class CounterService
+{
+    public int Value { get; private set; }
+
+    public void Increment() => Value++;
+}

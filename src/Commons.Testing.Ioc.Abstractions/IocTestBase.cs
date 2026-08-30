@@ -26,9 +26,39 @@ public abstract class IocTestBase
     }
 
     /// <summary>
-    /// Loest einen Service aus <see cref="Services"/> auf.
+    /// Loest einen Service aus <see cref="Services"/> auf. Unterscheidet ueber
+    /// <see cref="ServiceResolutionException.Reason"/>, ob keine Registrierung fuer <typeparamref name="T"/>
+    /// existiert (<see cref="ServiceResolutionFailureReason.MissingRegistration"/>) oder ob eine vorhandene
+    /// Registrierung nicht aufgeloest werden konnte (<see cref="ServiceResolutionFailureReason.ResolutionFailed"/>),
+    /// z. B. durch eine Exception im Konstruktor eines Service oder einer seiner Abhaengigkeiten, oder durch
+    /// eine von <c>validateScopes</c> aufgedeckte Captive Dependency (siehe REQ-07).
     /// </summary>
-    protected T GetService<T>() where T : notnull => Services.GetRequiredService<T>();
+    protected T GetService<T>() where T : notnull
+    {
+        var services = Services;
+
+        T? service;
+
+        try
+        {
+            service = services.GetService<T>();
+        }
+        catch (Exception ex)
+        {
+            throw new ServiceResolutionException(
+                ServiceResolutionFailureReason.ResolutionFailed,
+                typeof(T),
+                $"Die Aufloesung des Service-Typs '{typeof(T).FullName}' ist fehlgeschlagen. " +
+                $"{TestContextDescription.Current()}.",
+                ex);
+        }
+
+        return service ?? throw new ServiceResolutionException(
+            ServiceResolutionFailureReason.MissingRegistration,
+            typeof(T),
+            $"Fuer den Service-Typ '{typeof(T).FullName}' existiert keine Registrierung. " +
+            $"{TestContextDescription.Current()}.");
+    }
 
     /// <summary>
     /// Macht <see cref="Services"/> nach dem Teardown wieder unverfuegbar, damit ein versehentlicher Zugriff

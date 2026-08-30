@@ -25,6 +25,12 @@ namespace Commons.Testing.Ioc.WebHost;
 /// Anwendung). Methodenspezifische Service-Overrides (<see cref="ServiceOverrideAttribute"/>) werden in
 /// diesem Modus nicht unterstuetzt, siehe REQ-06.
 /// </remarks>
+/// <remarks>
+/// Die Basisklasse haelt keinen gemeinsamen veraenderbaren statischen Zustand und ist damit mit paralleler
+/// NUnit-Ausfuehrung auf Fixture-Ebene kompatibel (siehe REQ-11). Die Thread-Sicherheit der produktiven
+/// Registrierungslogik von <typeparamref name="TEntryPoint"/> und ihrer produktiven Singletons liegt in der
+/// Verantwortung der Anwendung.
+/// </remarks>
 public abstract class WebHostIntegrationTestBase<TEntryPoint> : IocTestBase
     where TEntryPoint : class
 {
@@ -61,8 +67,10 @@ public abstract class WebHostIntegrationTestBase<TEntryPoint> : IocTestBase
         catch (Exception ex)
         {
             throw new IntegrationTestSetupException(
-                $"Der Aufbau des Test-Hosts fuer '{typeof(TEntryPoint).FullName}' ist fehlgeschlagen. " +
-                $"{TestContextDescription.Current()}.", ex);
+                DiFailureDiagnostics.DescribeSetupFailure(
+                    $"Der Aufbau des Test-Hosts fuer '{typeof(TEntryPoint).FullName}' ist fehlgeschlagen. " +
+                    $"{TestContextDescription.Current()}.", ex),
+                ex);
         }
     }
 

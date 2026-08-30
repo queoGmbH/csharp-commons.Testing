@@ -13,6 +13,12 @@ namespace Commons.Testing.Ioc;
 /// dann klassenweite Overrides (<c>ConfigureOverrides</c>), dann methodenspezifische Overrides
 /// (<see cref="ServiceOverrideAttribute"/>, z. B. <see cref="UseFakeAttribute"/>).
 /// </summary>
+/// <remarks>
+/// Die Basisklasse haelt keinen gemeinsamen veraenderbaren statischen Zustand und ist damit mit paralleler
+/// NUnit-Ausfuehrung auf Fixture-Ebene kompatibel (siehe REQ-11). Die Thread-Sicherheit der von
+/// <see cref="RegisterApplicationServices"/> registrierten produktiven Registrierungslogik und produktiven
+/// Singletons liegt in der Verantwortung der Anwendung.
+/// </remarks>
 public abstract class IocIntegrationTestBase : IocTestBase
 {
     private ServiceProvider? _provider;
@@ -51,7 +57,9 @@ public abstract class IocIntegrationTestBase : IocTestBase
         catch (Exception ex)
         {
             throw new IntegrationTestSetupException(
-                $"Der Testaufbau des Servicegraphen ist fehlgeschlagen. {TestContextDescription.Current()}.", ex);
+                DiFailureDiagnostics.DescribeSetupFailure(
+                    $"Der Testaufbau des Servicegraphen ist fehlgeschlagen. {TestContextDescription.Current()}.", ex),
+                ex);
         }
 
         try
@@ -61,7 +69,9 @@ public abstract class IocIntegrationTestBase : IocTestBase
         catch (Exception ex)
         {
             throw new IntegrationTestSetupException(
-                $"Der Testaufbau des Servicegraphen ist fehlgeschlagen. {TestContextDescription.Current()}.", ex);
+                DiFailureDiagnostics.DescribeSetupFailure(
+                    $"Der Testaufbau des Servicegraphen ist fehlgeschlagen. {TestContextDescription.Current()}.", ex),
+                ex);
         }
 
         Services = _provider;
