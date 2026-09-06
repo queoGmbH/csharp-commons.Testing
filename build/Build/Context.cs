@@ -17,7 +17,6 @@ namespace Build
         }
 
         public IList<Lib> Lib { get; } = new List<Lib>() {
-            new Lib() { BuildConfig = "Release", MainProject = @"src\Commons.Testing\Commons.Testing.csproj" },
             new Lib() { BuildConfig = "Release", MainProject = @"src\Commons.Testing.Ioc.Abstractions\Commons.Testing.Ioc.Abstractions.csproj" },
             new Lib() { BuildConfig = "Release", MainProject = @"src\Commons.Testing.Ioc\Commons.Testing.Ioc.csproj" },
             new Lib() { BuildConfig = "Release", MainProject = @"src\Commons.Testing.Ioc.WebHost\Commons.Testing.Ioc.WebHost.csproj" }
@@ -63,7 +62,6 @@ namespace Build
     public class Tests
     {
         public Dictionary<string, string> TestProjects { get; } = new Dictionary<string, string>() {
-            { "Commons.Testing.Tests", @"tests\Commons.Testing.Tests\Commons.Testing.Tests.csproj" },
             { "Commons.Testing.Ioc.Tests", @"tests\Commons.Testing.Ioc.Tests\Commons.Testing.Ioc.Tests.csproj" },
             { "Commons.Testing.Ioc.WebHost.Tests", @"tests\Commons.Testing.Ioc.WebHost.Tests\Commons.Testing.Ioc.WebHost.Tests.csproj" }
         };
