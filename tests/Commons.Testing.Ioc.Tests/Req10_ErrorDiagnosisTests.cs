@@ -5,10 +5,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Commons.Testing.Ioc.Tests;
 
-// REQ-10: Fehlerdiagnose beim Testaufbau - Testkontext ist immer enthalten, die urspruengliche Exception
-// bleibt als InnerException erhalten, und der ausloesende Service-Typ eines generischen Container-
-// Aufbaufehlers wird benannt, wenn er sich aus der zugrunde liegenden Exception extrahieren laesst
-// (Kulanzregelung "falls ermittelbar").
+// REQ-10: Error diagnosis during test setup - the test context is always included, the original exception
+// is preserved as InnerException, and the triggering service type of a generic container setup failure is
+// named if it can be extracted from the underlying exception (best-effort rule "if determinable").
 
 [TestFixture]
 public class Req10_ErrorDiagnosisTests

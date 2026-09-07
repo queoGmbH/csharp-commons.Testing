@@ -5,11 +5,10 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Commons.Testing.Ioc.WebHost.Tests;
 
-// REQ-08: Lifecycle und Isolation im Web-Host-Modus - der Host wird einmal pro Testklasse aufgebaut, aber
-// jeder Test erhaelt einen neuen AsyncServiceScope, sodass Scoped-Services zwischen Tests isoliert sind.
-// Beide Tests inkrementieren unabhaengig voneinander und pruefen auf genau 1: Wuerde der Scope zwischen
-// Tests geteilt, saehe der zweite ausgefuehrte Test einen bereits erhoehten Wert, unabhaengig von der
-// tatsaechlichen Ausfuehrungsreihenfolge.
+// REQ-08: Lifecycle and isolation in web host mode - the host is built once per test class, but each test
+// gets a new AsyncServiceScope, so that Scoped services are isolated between tests. Both tests increment
+// independently of one another and check for exactly 1: if the scope were shared between tests, the second
+// test executed would see an already increased value, regardless of the actual execution order.
 
 [TestFixture]
 public class Req08_IsolationTests : WebHostIntegrationTestBase<Program>

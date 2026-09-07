@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Commons.Testing.Ioc.WebHost.Tests;
 
-// REQ-04: Klassenweite Service-Overrides im Web-Host-Modus.
+// REQ-04: Class-wide service overrides in web host mode.
 
 [TestFixture]
 public class Req04_WebHostClassWideOverride : WebHostIntegrationTestBase<Program>

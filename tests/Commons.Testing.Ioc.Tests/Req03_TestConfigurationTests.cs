@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Commons.Testing.Ioc.Tests;
 
-// REQ-03: Bereitstellung der Test-Konfiguration.
+// REQ-03: Providing the test configuration.
 
 [TestFixture]
 public class Req03_DefaultTestConfiguration : IocIntegrationTestBase
@@ -28,8 +28,8 @@ public class Req03_CustomTestConfiguration : IocIntegrationTestBase
 
     protected override IConfiguration BuildTestConfiguration()
     {
-        // Kombiniert eine (hier vorhandene) Konfigurationsdatei mit der optionalen Standarddatei, die in
-        // diesem Test nicht existiert.
+        // Combines a (here present) configuration file with the optional default file, which does not
+        // exist in this test.
         var configFilePath = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid():N}.json");
         File.WriteAllText(configFilePath, /*lang=json,strict*/ "{ \"Greeting\": { \"Message\": \"Custom\" } }");
 

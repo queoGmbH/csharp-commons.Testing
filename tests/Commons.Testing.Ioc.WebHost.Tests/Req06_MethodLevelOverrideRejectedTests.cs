@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Commons.Testing.Ioc.WebHost.Tests;
 
-// REQ-06: Kein methodenspezifisches Override im Web-Host-Modus.
+// REQ-06: No method-specific override in web host mode.
 
 [TestFixture]
 public class Req06_MethodLevelOverrideRejected

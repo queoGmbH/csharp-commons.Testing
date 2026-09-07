@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Commons.Testing.Ioc.WebHost.Tests;
 
-// REQ-03: Bereitstellung der Test-Konfiguration im Web-Host-Modus.
+// REQ-03: Providing the test configuration in web host mode.
 
 [TestFixture]
 public class Req03_WebHostTestConfiguration : WebHostIntegrationTestBase<Program>

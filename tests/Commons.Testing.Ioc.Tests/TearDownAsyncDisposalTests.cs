@@ -3,9 +3,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Commons.Testing.Ioc.Tests;
 
-// Regressionstest: BaseTearDown muss den ServiceProvider ueber DisposeAsync() freigeben, nicht ueber das
-// synchrone Dispose(), da Letzteres bei Services, die ausschliesslich IAsyncDisposable implementieren, eine
-// Exception wirft.
+// Regression test: BaseTearDown must release the ServiceProvider via DisposeAsync(), not via the
+// synchronous Dispose(), since the latter throws an exception for services that implement only
+// IAsyncDisposable.
 
 [TestFixture]
 public class TearDownAsyncDisposalTests : IocIntegrationTestBase

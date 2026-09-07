@@ -3,11 +3,11 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Commons.Testing.Ioc.Tests;
 
-// Regressionstest: UseFakeAttribute ohne explizite Lifetime uebernimmt die Lifetime der ersetzten
-// Registrierung, statt pauschal Singleton zu erzwingen. Andernfalls koennte ein Fake fuer einen eigentlich
-// Scoped/Transient registrierten Service mit validateScopes (NFR-05) eine Captive-Dependency-Exception
-// ausloesen, sobald der Fake selbst von einem Scoped-Service abhaengt - ein Fehler, der nichts mit der
-// Testautorin/dem Testautor zu tun haette.
+// Regression test: UseFakeAttribute without an explicit lifetime adopts the lifetime of the replaced
+// registration, instead of unconditionally forcing Singleton. Otherwise, a fake for a service actually
+// registered as Scoped/Transient could trigger a captive dependency exception under validateScopes
+// (NFR-05) as soon as the fake itself depends on a Scoped service - an error that would have nothing to do
+// with the test author.
 
 [TestFixture]
 public class UseFakeLifetimeInferenceTests

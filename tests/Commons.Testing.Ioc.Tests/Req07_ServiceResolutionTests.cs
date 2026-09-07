@@ -5,8 +5,8 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Commons.Testing.Ioc.Tests;
 
-// REQ-07: Zugriff auf Services im Test - GetService<T>() muss fehlende Registrierung und fehlgeschlagene
-// Aufloesung ueber ServiceResolutionException.Reason unterscheidbar melden.
+// REQ-07: Accessing services in the test - GetService<T>() must report missing registration and failed
+// resolution as distinguishable via ServiceResolutionException.Reason.
 
 [TestFixture]
 public class Req07_ServiceResolutionTests : IocIntegrationTestBase
@@ -15,9 +15,9 @@ public class Req07_ServiceResolutionTests : IocIntegrationTestBase
         (services, _) =>
         {
             services.AddSingleton<IGreeter, Greeter>();
-            // Bewusst nicht Scoped: Ein Scoped-Service wuerde bereits durch validateScopes (NFR-05)
-            // abgelehnt, bevor der Konstruktor ueberhaupt laeuft (siehe Req_For_Scoped_Service-Test unten),
-            // und wuerde damit nicht den hier zu pruefenden Konstruktor-Fehlerfall abdecken.
+            // Deliberately not Scoped: a Scoped service would already be rejected by validateScopes
+            // (NFR-05) before the constructor even runs (see the Req_For_Scoped_Service test below), and
+            // would therefore not cover the constructor failure case being tested here.
             services.AddSingleton<IThrowingService, ThrowingService>();
             services.AddScoped<IScopedGreeter, ScopedGreeter>();
         };
@@ -50,9 +50,9 @@ public class Req07_ServiceResolutionTests : IocIntegrationTestBase
     [Test]
     public void GetService_For_Scoped_Service_From_Root_Provider_Throws_With_ResolutionFailed_Reason()
     {
-        // Der Plain-Modus erzeugt keinen eigenen Scope (siehe REQ-08); die Aufloesung eines Scoped-Service
-        // direkt ueber die Root-Services schlaegt unter validateScopes (NFR-05) fehl. Dies ist der in REQ-07
-        // ausdruecklich genannte Captive-Dependency-Fall und muss als ResolutionFailed gemeldet werden.
+        // Plain mode does not create its own scope (see REQ-08); resolving a Scoped service directly via
+        // the root services fails under validateScopes (NFR-05). This is the captive dependency case
+        // explicitly named in REQ-07 and must be reported as ResolutionFailed.
         var exception = Assert.Throws<ServiceResolutionException>(new Action(
             () => GetService<IScopedGreeter>()));
 

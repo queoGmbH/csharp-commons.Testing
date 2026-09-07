@@ -5,9 +5,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Commons.Testing.Ioc.WebHost.Tests;
 
-// REQ-09: Automatisches Disposal im Web-Host-Modus - der Test-Scope muss ueber AsyncServiceScope.DisposeAsync()
-// freigegeben werden, nicht ueber das synchrone IServiceScope.Dispose(), da Letzteres bei Services, die
-// ausschliesslich IAsyncDisposable implementieren, eine Exception wirft.
+// REQ-09: Automatic disposal in web host mode - the test scope must be released via
+// AsyncServiceScope.DisposeAsync(), not via the synchronous IServiceScope.Dispose(), since the latter
+// throws an exception for services that implement only IAsyncDisposable.
 
 [TestFixture]
 public class Req09_AsyncDisposalTests : WebHostIntegrationTestBase<Program>

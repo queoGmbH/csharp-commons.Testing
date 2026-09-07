@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Commons.Testing.Ioc.Tests;
 
-// REQ-01: Bootstrap im Plain-Modus.
+// REQ-01: Bootstrap in plain mode.
 
 [TestFixture]
 public class Req01_ValidBootstrap : IocIntegrationTestBase

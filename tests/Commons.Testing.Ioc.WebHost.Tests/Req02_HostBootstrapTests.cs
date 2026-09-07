@@ -2,7 +2,7 @@ using Commons.Testing.Ioc.WebHost.Tests.SampleApp;
 
 namespace Commons.Testing.Ioc.WebHost.Tests;
 
-// REQ-02: Bootstrap im Web-Host-Modus.
+// REQ-02: Bootstrap in web host mode.
 
 [TestFixture]
 public class Req02_HostBootstrap : WebHostIntegrationTestBase<Program>

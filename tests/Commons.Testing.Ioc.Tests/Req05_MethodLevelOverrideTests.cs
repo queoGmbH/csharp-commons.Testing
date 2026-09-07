@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Commons.Testing.Ioc.Tests;
 
-// REQ-05: Methodenspezifische Service-Overrides im Plain-Modus.
+// REQ-05: Method-specific service overrides in plain mode.
 
 [TestFixture]
 public class Req05_MethodLevelOverride : IocIntegrationTestBase
@@ -24,7 +24,7 @@ public class Req05_MethodLevelOverride : IocIntegrationTestBase
     [Test]
     public void Method_Without_UseFake_Resolves_The_Production_Service()
     {
-        // Belegt, dass ein methodenspezifisches Override nur fuer den Test gilt, der es anfordert.
+        // Proves that a method-specific override only applies to the test that requests it.
         Assert.That(GetService<IGreeter>(), Is.InstanceOf<Greeter>());
     }
 }
@@ -45,8 +45,8 @@ public class Req05_MethodLevelOverride_On_Top_Of_ClassWideOverride : IocIntegrat
     [UseFake(typeof(IGreeter), typeof(SecondFakeGreeter))]
     public void MethodLevelOverride_Wins_Over_ClassWideOverride()
     {
-        // Reihenfolge It. Anforderung: produktiver Bootstrap -> klassenweite Overrides -> methodenspezifische
-        // Overrides. Das methodenspezifische Override muss also zuletzt gewinnen.
+        // Order per requirement: production bootstrap -> class-wide overrides -> method-specific
+        // overrides. The method-specific override must therefore win last.
         Assert.That(GetService<IGreeter>(), Is.InstanceOf<SecondFakeGreeter>());
     }
 }

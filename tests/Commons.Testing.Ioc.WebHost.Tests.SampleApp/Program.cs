@@ -11,8 +11,8 @@ app.MapGet("/greet", (IGreeter greeter) => greeter.Greet());
 app.Run();
 
 /// <summary>
-/// Minimaler Beispiel-Host, der in den Tests als <c>TEntryPoint</c> fuer
-/// <c>WebHostIntegrationTestBase&lt;TEntryPoint&gt;</c> dient.
+/// Minimal example host that serves in the tests as <c>TEntryPoint</c> for
+/// <c>WebHostIntegrationTestBase&lt;TEntryPoint&gt;</c>.
 /// </summary>
 public partial class Program
 {

@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Commons.Testing.Ioc.Tests;
 
-// REQ-04: Klassenweite Service-Overrides.
+// REQ-04: Class-wide service overrides.
 
 [TestFixture]
 public class Req04_ClassWideOverride : IocIntegrationTestBase

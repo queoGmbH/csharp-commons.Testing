@@ -3,10 +3,10 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Commons.Testing.Ioc.Tests;
 
-// REQ-08: Lifecycle und Isolation im Plain-Modus - pro Test ein vollstaendig neuer ServiceProvider, sodass
-// kein Zustand zwischen Tests uebertragen wird. Beide Tests inkrementieren unabhaengig voneinander und
-// pruefen auf genau 1: Wuerde Zustand ueber Tests hinweg geteilt, saehe der zweite ausgefuehrte Test einen
-// bereits erhoehten Wert, unabhaengig von der tatsaechlichen Ausfuehrungsreihenfolge.
+// REQ-08: Lifecycle and isolation in plain mode - a completely new ServiceProvider per test, so that no
+// state is carried over between tests. Both tests increment independently of one another and check for
+// exactly 1: if state were shared across tests, the second test executed would see an already increased
+// value, regardless of the actual execution order.
 
 [TestFixture]
 public class Req08_IsolationTests : IocIntegrationTestBase

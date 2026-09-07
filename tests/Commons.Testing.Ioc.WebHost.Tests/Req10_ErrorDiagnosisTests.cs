@@ -6,9 +6,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Commons.Testing.Ioc.WebHost.Tests;
 
-// REQ-10: Fehlerdiagnose beim Testaufbau im Web-Host-Modus - der Aufbaufehler wird mit Testkontext
-// angereichert, die urspruengliche Exception bleibt als InnerException erhalten, und der ausloesende
-// Service-Typ wird benannt, wenn er sich aus der zugrunde liegenden Exception extrahieren laesst.
+// REQ-10: Error diagnosis during test setup in web host mode - the setup failure is enriched with test
+// context, the original exception is preserved as InnerException, and the triggering service type is
+// named if it can be extracted from the underlying exception.
 
 [TestFixture]
 public class Req10_ErrorDiagnosisTests
