@@ -5,10 +5,10 @@ using Commons.Testing.Ioc.Abstractions;
 namespace Commons.Testing.Ioc.WebHost;
 
 /// <summary>
-/// Prueft, dass eine Testmethode im Web-Host-Modus kein methodenspezifisches Service-Override
-/// (<see cref="ServiceOverrideAttribute"/>) anfordert. Als eigenstaendige, von
-/// <see cref="NUnit.Framework.TestContext"/> entkoppelte Klasse implementiert, damit REQ-06 unabhaengig von
-/// einer laufenden NUnit-Testausfuehrung testbar ist.
+/// Ensures that a test method in web host mode does not request a method-level service override
+/// (<see cref="ServiceOverrideAttribute"/>). Implemented as a standalone class, decoupled from
+/// <see cref="NUnit.Framework.TestContext"/>, so that this rule can be tested independently of a running
+/// NUnit test execution.
 /// </summary>
 internal static class MethodLevelOverrideGuard
 {

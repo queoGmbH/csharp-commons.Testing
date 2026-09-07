@@ -4,16 +4,15 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Commons.Testing.Ioc.Abstractions;
 
 /// <summary>
-/// Basisklasse fuer Attribute, mit denen einzelne Testmethoden zusaetzliche, methodenspezifische
-/// Service-Overrides anfordern koennen. Wird ausschliesslich im Plain-Modus (<c>IocIntegrationTestBase</c>)
-/// ausgewertet; im Web-Host-Modus fuehrt die Verwendung eines solchen Attributs zu einem Konfigurationsfehler
-/// beim Testaufbau.
+/// Base class for attributes that allow individual test methods to request additional, method-level
+/// service overrides. Evaluated exclusively in plain mode (<c>IocIntegrationTestBase</c>); in web host mode,
+/// using such an attribute results in a configuration error during test setup.
 /// </summary>
 [AttributeUsage(AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
 public abstract class ServiceOverrideAttribute : Attribute
 {
     /// <summary>
-    /// Erstellt eine neue Instanz fuer den angegebenen Service-Typ.
+    /// Creates a new instance for the given service type.
     /// </summary>
     protected ServiceOverrideAttribute(Type serviceType)
     {
@@ -21,14 +20,14 @@ public abstract class ServiceOverrideAttribute : Attribute
     }
 
     /// <summary>
-    /// Der Service-Typ, fuer den dieses Attribut ein Override anfordert. Fuer denselben Service-Typ darf
-    /// pro Testmethode nur ein methodenspezifisches Override angegeben werden.
+    /// The service type for which this attribute requests an override. Only one method-level override may
+    /// be specified per test method for the same service type.
     /// </summary>
     public Type ServiceType { get; }
 
     /// <summary>
-    /// Wendet das Override auf den Servicegraphen der aktuellen Testmethode an. Wird nach dem produktiven
-    /// Bootstrap und nach den klassenweiten Overrides (<c>ConfigureOverrides</c>) ausgefuehrt.
+    /// Applies the override to the service graph of the current test method. Executed after the production
+    /// bootstrap and after the class-wide overrides (<c>ConfigureOverrides</c>).
     /// </summary>
     public abstract void ApplyOverride(IServiceCollection services, IConfiguration configuration);
 }

@@ -1,14 +1,14 @@
 namespace Commons.Testing.Ioc.Abstractions;
 
 /// <summary>
-/// Gemeinsame Basisklasse aller dedizierten Exceptions dieser Bibliothek. Fehlermeldungen sind gemaess
-/// den Rahmenbedingungen der Bibliothek konsistent auf Deutsch formuliert und werden mit Testkontext
-/// (mindestens Testklasse, wo bekannt auch Testmethode) angereichert.
+/// Common base class for all dedicated exceptions in this library. Error messages are consistently
+/// formulated in German, by convention of this library, and are enriched with test context (at minimum the
+/// test class, and the test method where known).
 /// </summary>
 public abstract class IntegrationTestException : Exception
 {
     /// <summary>
-    /// Erstellt eine neue Instanz mit einer Fehlermeldung.
+    /// Creates a new instance with an error message.
     /// </summary>
     protected IntegrationTestException(string message)
         : base(message)
@@ -16,7 +16,7 @@ public abstract class IntegrationTestException : Exception
     }
 
     /// <summary>
-    /// Erstellt eine neue Instanz mit einer Fehlermeldung und der urspruenglichen Exception als
+    /// Creates a new instance with an error message and the original exception as
     /// <see cref="Exception.InnerException"/>.
     /// </summary>
     protected IntegrationTestException(string message, Exception innerException)

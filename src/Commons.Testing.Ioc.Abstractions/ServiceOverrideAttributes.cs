@@ -5,19 +5,19 @@ using NUnit.Framework;
 namespace Commons.Testing.Ioc.Abstractions;
 
 /// <summary>
-/// Liest <see cref="ServiceOverrideAttribute"/>-Attribute der aktuellen Testmethode aus. Wird sowohl vom
-/// Plain-Modus (Anwendung der Overrides) als auch vom Web-Host-Modus (Ablehnung der Overrides, siehe REQ-06)
-/// verwendet, damit beide Modi dieselbe Erkennungslogik teilen.
+/// Reads <see cref="ServiceOverrideAttribute"/> attributes of the current test method. Used both by plain
+/// mode (applying the overrides) and web host mode (rejecting the overrides), so that both modes share the
+/// same detection logic.
 /// </summary>
 public static class ServiceOverrideAttributes
 {
     /// <summary>
-    /// Liefert den <see cref="MethodInfo"/> der aktuell von NUnit ausgefuehrten Testmethode, sofern bekannt.
+    /// Returns the <see cref="MethodInfo"/> of the test method currently being executed by NUnit, if known.
     /// </summary>
     /// <remarks>
-    /// <see cref="TestContext.TestAdapter.MethodInfo"/> liefert in aktuellen NUnit-Versionen keinen
-    /// vollwertigen <see cref="MethodInfo"/> mit Zugriff auf Custom Attributes; das veraltete
-    /// <see cref="TestContext.TestAdapter.Method"/> ist dafuer weiterhin der einzige Weg.
+    /// <see cref="TestContext.TestAdapter.MethodInfo"/> does not return a full-fledged <see cref="MethodInfo"/>
+    /// with access to custom attributes in current NUnit versions; the obsolete
+    /// <see cref="TestContext.TestAdapter.Method"/> remains the only way to obtain one.
     /// </remarks>
     public static MethodInfo? CurrentTestMethod()
     {
@@ -27,7 +27,7 @@ public static class ServiceOverrideAttributes
     }
 
     /// <summary>
-    /// Liest alle <see cref="ServiceOverrideAttribute"/>-Attribute der angegebenen Testmethode aus.
+    /// Reads all <see cref="ServiceOverrideAttribute"/> attributes of the given test method.
     /// </summary>
     public static IReadOnlyList<ServiceOverrideAttribute> ReadFrom(MethodInfo? methodInfo)
     {

@@ -1,9 +1,9 @@
 namespace Commons.Testing.Ioc.Abstractions;
 
 /// <summary>
-/// Wird geworfen, wenn der Testaufbau (Container- oder Hostaufbau) fehlschlaegt, z. B. weil eine
-/// erforderliche Registrierungsfunktion fehlt oder unerwartet <see langword="null"/> liefert, oder weil
-/// der produktive Bootstrap eine Exception wirft.
+/// Thrown when test setup (container or host bootstrap) fails, e.g. because a required registration
+/// function is missing or unexpectedly returns <see langword="null"/>, or because the production bootstrap
+/// throws an exception.
 /// </summary>
 public sealed class IntegrationTestSetupException : IntegrationTestException
 {

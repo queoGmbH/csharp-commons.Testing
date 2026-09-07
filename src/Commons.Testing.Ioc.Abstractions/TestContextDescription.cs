@@ -3,15 +3,15 @@ using NUnit.Framework;
 namespace Commons.Testing.Ioc.Abstractions;
 
 /// <summary>
-/// Hilfsfunktion, um Fehlermeldungen konsistent mit dem aktuellen NUnit-Testkontext (Testklasse und, sofern
-/// bekannt, Testmethode) anzureichern.
+/// Helper to consistently enrich error messages with the current NUnit test context (test class and, if
+/// known, test method).
 /// </summary>
 public static class TestContextDescription
 {
     /// <summary>
-    /// Liefert eine Beschreibung des aktuellen Testkontexts fuer Fehlermeldungen, z. B.
-    /// "Testklasse 'Foo', Testmethode 'Bar'". Die Testmethode wird ausgelassen, wenn sie im aktuellen
-    /// Kontext nicht bekannt ist (z. B. innerhalb von OneTimeSetUp).
+    /// Returns a description of the current test context for error messages, e.g.
+    /// "Testklasse 'Foo', Testmethode 'Bar'". The test method is omitted if it is not known in the current
+    /// context (e.g. inside OneTimeSetUp).
     /// </summary>
     public static string Current()
     {

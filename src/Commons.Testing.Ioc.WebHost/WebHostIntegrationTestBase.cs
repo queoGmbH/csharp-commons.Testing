@@ -11,25 +11,24 @@ using NUnit.Framework;
 namespace Commons.Testing.Ioc.WebHost;
 
 /// <summary>
-/// Basisklasse fuer Integrationstests mit echtem ASP.NET-Core-Host ueber <see cref="WebApplicationFactory{TEntryPoint}"/>.
-/// Der Host wird einmal pro Testklasse aus <typeparamref name="TEntryPoint"/> aufgebaut (<c>OneTimeSetUp</c>
-/// / <c>OneTimeTearDown</c>); pro Test wird lediglich ein neuer <see cref="AsyncServiceScope"/> erzeugt
-/// (<c>SetUp</c> / <c>TearDown</c>). Die produktive Service-Registrierung von <typeparamref name="TEntryPoint"/>
-/// wird dabei nicht erneut manuell aufgerufen; testseitige Anpassungen (<c>ConfigureOverrides</c>) werden
-/// stattdessen ueber <c>ConfigureTestServices</c> angewendet, nachdem der produktive Host-Bootstrap bereits
-/// gelaufen ist.
+/// Base class for integration tests with a real ASP.NET Core host via <see cref="WebApplicationFactory{TEntryPoint}"/>.
+/// The host is built once per test class from <typeparamref name="TEntryPoint"/> (<c>OneTimeSetUp</c> /
+/// <c>OneTimeTearDown</c>); for each test, only a new <see cref="AsyncServiceScope"/> is created
+/// (<c>SetUp</c> / <c>TearDown</c>). The production service registration of <typeparamref name="TEntryPoint"/>
+/// is not invoked again manually; test-side adjustments (<c>ConfigureOverrides</c>) are instead applied via
+/// <c>ConfigureTestServices</c>, after the production host bootstrap has already run.
 /// </summary>
 /// <remarks>
-/// <typeparamref name="TEntryPoint"/> muss fuer das Testassembly sichtbar sein (z. B. ueber
-/// <c>public partial class Program</c> oder <c>[assembly: InternalsVisibleTo(...)]</c> in der getesteten
-/// Anwendung). Methodenspezifische Service-Overrides (<see cref="ServiceOverrideAttribute"/>) werden in
-/// diesem Modus nicht unterstuetzt, siehe REQ-06.
+/// <typeparamref name="TEntryPoint"/> must be visible to the test assembly (e.g. via
+/// <c>public partial class Program</c> or <c>[assembly: InternalsVisibleTo(...)]</c> in the application
+/// under test). Method-level service overrides (<see cref="ServiceOverrideAttribute"/>) are not supported in
+/// this mode.
 /// </remarks>
 /// <remarks>
-/// Die Basisklasse haelt keinen gemeinsamen veraenderbaren statischen Zustand und ist damit mit paralleler
-/// NUnit-Ausfuehrung auf Fixture-Ebene kompatibel (siehe REQ-11). Die Thread-Sicherheit der produktiven
-/// Registrierungslogik von <typeparamref name="TEntryPoint"/> und ihrer produktiven Singletons liegt in der
-/// Verantwortung der Anwendung.
+/// The base class holds no shared mutable static state and is therefore compatible with parallel NUnit
+/// execution at the fixture level. Thread safety of the production registration logic of
+/// <typeparamref name="TEntryPoint"/> and its production singletons is the responsibility of the
+/// application.
 /// </remarks>
 public abstract class WebHostIntegrationTestBase<TEntryPoint> : IocTestBase
     where TEntryPoint : class
@@ -38,7 +37,7 @@ public abstract class WebHostIntegrationTestBase<TEntryPoint> : IocTestBase
     private AsyncServiceScope? _scope;
 
     /// <summary>
-    /// Baut den ASP.NET-Core-Host einmal fuer die gesamte Testklasse auf.
+    /// Builds the ASP.NET Core host once for the entire test class.
     /// </summary>
     [OneTimeSetUp]
     public void BaseOneTimeSetUp()
@@ -60,8 +59,8 @@ public abstract class WebHostIntegrationTestBase<TEntryPoint> : IocTestBase
                 });
             });
 
-            // Beruehrt den Host, damit ein fehlerhafter Bootstrap bereits hier und nicht erst beim ersten
-            // Testzugriff auf Services sichtbar wird.
+            // Touches the host so that a faulty bootstrap becomes visible here already, rather than only on
+            // the first test access to services.
             _ = _factory.Services;
         }
         catch (Exception ex)
@@ -75,8 +74,8 @@ public abstract class WebHostIntegrationTestBase<TEntryPoint> : IocTestBase
     }
 
     /// <summary>
-    /// Erzeugt vor jedem Test einen neuen <see cref="AsyncServiceScope"/>. Bricht ab, wenn die Testmethode
-    /// ein methodenspezifisches Service-Override anfordert (siehe REQ-06).
+    /// Creates a new <see cref="AsyncServiceScope"/> before each test. Aborts if the test method requests a
+    /// method-level service override.
     /// </summary>
     [SetUp]
     public void BaseSetUp()
@@ -88,7 +87,7 @@ public abstract class WebHostIntegrationTestBase<TEntryPoint> : IocTestBase
     }
 
     /// <summary>
-    /// Gibt den Scope des aktuellen Tests frei.
+    /// Releases the scope of the current test.
     /// </summary>
     [TearDown]
     public async Task BaseTearDown()
@@ -103,7 +102,7 @@ public abstract class WebHostIntegrationTestBase<TEntryPoint> : IocTestBase
     }
 
     /// <summary>
-    /// Gibt den Test-Host nach Abschluss der Testklasse frei.
+    /// Releases the test host after the test class has completed.
     /// </summary>
     [OneTimeTearDown]
     public async Task BaseOneTimeTearDown()

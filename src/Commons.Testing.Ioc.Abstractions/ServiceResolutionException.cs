@@ -1,16 +1,15 @@
 namespace Commons.Testing.Ioc.Abstractions;
 
 /// <summary>
-/// Wird von <see cref="IocTestBase.GetService{T}"/> geworfen, wenn ein Service nicht aufgeloest werden kann.
-/// <see cref="Reason"/> unterscheidet, ob fuer den angefragten Service-Typ keine Registrierung existiert
-/// (<see cref="ServiceResolutionFailureReason.MissingRegistration"/>) oder ob die Aufloesung einer
-/// vorhandenen Registrierung fehlgeschlagen ist (<see cref="ServiceResolutionFailureReason.ResolutionFailed"/>),
-/// siehe REQ-07.
+/// Thrown by <see cref="IocTestBase.GetService{T}"/> when a service cannot be resolved. <see cref="Reason"/>
+/// distinguishes whether no registration exists for the requested service type
+/// (<see cref="ServiceResolutionFailureReason.MissingRegistration"/>) or whether resolution of an existing
+/// registration failed (<see cref="ServiceResolutionFailureReason.ResolutionFailed"/>).
 /// </summary>
 public sealed class ServiceResolutionException : IntegrationTestException
 {
     /// <summary>
-    /// Erstellt eine neue Instanz fuer den Fall <see cref="ServiceResolutionFailureReason.MissingRegistration"/>.
+    /// Creates a new instance for the <see cref="ServiceResolutionFailureReason.MissingRegistration"/> case.
     /// </summary>
     public ServiceResolutionException(ServiceResolutionFailureReason reason, Type serviceType, string message)
         : base(message)
@@ -20,8 +19,8 @@ public sealed class ServiceResolutionException : IntegrationTestException
     }
 
     /// <summary>
-    /// Erstellt eine neue Instanz fuer den Fall <see cref="ServiceResolutionFailureReason.ResolutionFailed"/>,
-    /// mit der urspruenglichen Exception als <see cref="Exception.InnerException"/>.
+    /// Creates a new instance for the <see cref="ServiceResolutionFailureReason.ResolutionFailed"/> case,
+    /// with the original exception as <see cref="Exception.InnerException"/>.
     /// </summary>
     public ServiceResolutionException(ServiceResolutionFailureReason reason, Type serviceType, string message, Exception innerException)
         : base(message, innerException)
@@ -31,12 +30,12 @@ public sealed class ServiceResolutionException : IntegrationTestException
     }
 
     /// <summary>
-    /// Der Grund, warum die Serviceauflosung fehlgeschlagen ist.
+    /// The reason why service resolution failed.
     /// </summary>
     public ServiceResolutionFailureReason Reason { get; }
 
     /// <summary>
-    /// Der Service-Typ, dessen Aufloesung fehlgeschlagen ist.
+    /// The service type whose resolution failed.
     /// </summary>
     public Type ServiceType { get; }
 }

@@ -8,30 +8,29 @@ using NUnit.Framework;
 namespace Commons.Testing.Ioc;
 
 /// <summary>
-/// Basisklasse fuer Integrationstests ohne ASP.NET-Core-Host. Baut vor jedem Test einen vollstaendig neuen
-/// <see cref="IServiceProvider"/> auf: produktiver Bootstrap (<see cref="RegisterApplicationServices"/>),
-/// dann klassenweite Overrides (<c>ConfigureOverrides</c>), dann methodenspezifische Overrides
-/// (<see cref="ServiceOverrideAttribute"/>, z. B. <see cref="UseFakeAttribute"/>).
+/// Base class for integration tests without an ASP.NET Core host. Builds a completely new
+/// <see cref="IServiceProvider"/> before each test: production bootstrap
+/// (<see cref="RegisterApplicationServices"/>), then class-wide overrides (<c>ConfigureOverrides</c>), then
+/// method-level overrides (<see cref="ServiceOverrideAttribute"/>, e.g. <see cref="UseFakeAttribute"/>).
 /// </summary>
 /// <remarks>
-/// Die Basisklasse haelt keinen gemeinsamen veraenderbaren statischen Zustand und ist damit mit paralleler
-/// NUnit-Ausfuehrung auf Fixture-Ebene kompatibel (siehe REQ-11). Die Thread-Sicherheit der von
-/// <see cref="RegisterApplicationServices"/> registrierten produktiven Registrierungslogik und produktiven
-/// Singletons liegt in der Verantwortung der Anwendung.
+/// The base class holds no shared mutable static state and is therefore compatible with parallel NUnit
+/// execution at the fixture level. Thread safety of the production registration logic registered by
+/// <see cref="RegisterApplicationServices"/>, and of production singletons, is the responsibility of the
+/// application.
 /// </remarks>
 public abstract class IocIntegrationTestBase : IocTestBase
 {
     private ServiceProvider? _provider;
 
     /// <summary>
-    /// Registrierungsfunktion, die den produktionsnahen Servicegraphen der Anwendung aufbaut. Muss von der
-    /// abgeleiteten Testklasse bereitgestellt werden und darf zur Laufzeit nicht <see langword="null"/>
-    /// liefern.
+    /// Registration function that builds the application's production-like service graph. Must be provided
+    /// by the derived test class and must not return <see langword="null"/> at runtime.
     /// </summary>
     protected abstract Action<IServiceCollection, IConfiguration> RegisterApplicationServices { get; }
 
     /// <summary>
-    /// Baut vor jedem Test einen neuen <see cref="IServiceProvider"/> auf.
+    /// Builds a new <see cref="IServiceProvider"/> before each test.
     /// </summary>
     [SetUp]
     public void BaseSetUp()
@@ -78,9 +77,8 @@ public abstract class IocIntegrationTestBase : IocTestBase
     }
 
     /// <summary>
-    /// Gibt den <see cref="IServiceProvider"/> des Tests frei. Verwendet <c>DisposeAsync()</c>, da
-    /// <c>Dispose()</c> fuer Services, die ausschliesslich <see cref="IAsyncDisposable"/> implementieren,
-    /// eine Exception wirft (siehe REQ-09).
+    /// Releases the test's <see cref="IServiceProvider"/>. Uses <c>DisposeAsync()</c>, since <c>Dispose()</c>
+    /// throws an exception for services that implement only <see cref="IAsyncDisposable"/>.
     /// </summary>
     [TearDown]
     public async Task BaseTearDown()
@@ -95,11 +93,11 @@ public abstract class IocIntegrationTestBase : IocTestBase
     }
 
     /// <summary>
-    /// Wertet die <see cref="ServiceOverrideAttribute"/>-Attribute der aktuellen Testmethode aus und wendet
-    /// sie an. Nimmt den <see cref="System.Reflection.MethodInfo"/> explizit als Parameter entgegen (statt ihn
-    /// selbst ueber NUnit's <see cref="NUnit.Framework.TestContext"/> zu ermitteln), damit die
-    /// Konfigurationsfehler-Erkennung (doppelte Overrides fuer denselben Service-Typ) unabhaengig von einer
-    /// laufenden NUnit-Testausfuehrung testbar ist.
+    /// Reads the <see cref="ServiceOverrideAttribute"/> attributes of the current test method and applies
+    /// them. Takes the <see cref="System.Reflection.MethodInfo"/> explicitly as a parameter (instead of
+    /// determining it itself via NUnit's <see cref="NUnit.Framework.TestContext"/>), so that the
+    /// configuration error detection (duplicate overrides for the same service type) can be tested
+    /// independently of a running NUnit test execution.
     /// </summary>
     internal static void ApplyMethodLevelOverrides(
         IServiceCollection services, IConfiguration configuration, System.Reflection.MethodInfo? methodInfo)
