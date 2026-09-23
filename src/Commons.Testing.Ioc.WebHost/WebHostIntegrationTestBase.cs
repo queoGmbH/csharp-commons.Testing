@@ -8,6 +8,8 @@ using Microsoft.Extensions.DependencyInjection;
 
 using NUnit.Framework;
 
+using System.Net.Http;
+
 namespace Commons.Testing.Ioc.WebHost;
 
 /// <summary>
@@ -85,6 +87,14 @@ public abstract class WebHostIntegrationTestBase<TEntryPoint> : IocTestBase
         _scope = _factory!.Services.CreateAsyncScope();
         Services = _scope.Value.ServiceProvider;
     }
+
+    /// <summary>
+    /// Creates an <see cref="HttpClient"/> that issues real HTTP requests against the test host, i.e. through
+    /// routing, model binding, filters and exception handling exactly as in production. Use this instead of
+    /// <see cref="Abstractions.IocTestBase.GetService{T}"/> plus a direct controller call whenever the HTTP
+    /// pipeline itself (status codes, headers, serialization, ...) is part of what is under test.
+    /// </summary>
+    protected HttpClient CreateClient() => _factory!.CreateClient();
 
     /// <summary>
     /// Releases the scope of the current test.
