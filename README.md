@@ -1,6 +1,6 @@
 # Commons.Testing.Ioc
 
-Eine .NET-8-Bibliothek fuer NUnit-basierte Integrationstests auf Basis von
+Eine .NET-10-Bibliothek fuer NUnit-basierte Integrationstests auf Basis von
 `Microsoft.Extensions.DependencyInjection`. Sie erlaubt es, in Tests denselben, produktionsnahen
 Servicegraphen der Anwendung aufzubauen wie zur Laufzeit und dabei gezielt einzelne Abhaengigkeiten
 (z. B. externe Dienste) durch Test-Doubles zu ersetzen.
@@ -121,6 +121,23 @@ dafuer meist eine Zeile am Ende der `Program.cs` der getesteten Anwendung:
 ```csharp
 public partial class Program
 {
+}
+```
+
+Zusaetzlich zu `GetService<T>()` stellt der Web-Host-Modus `CreateClient()` bereit, das einen
+`HttpClient` liefert, der echte HTTP-Requests gegen den Test-Host absetzt - also inklusive Routing,
+Model-Binding, Filtern und Exception-Handling wie in Produktion. Das ist die passende Wahl, sobald die
+HTTP-Pipeline selbst (Statuscodes, Header, Serialisierung, ...) Teil des Testgegenstands ist:
+
+```csharp
+[Test]
+public async Task GetOrder_Returns_NotFound_For_An_Unknown_Id()
+{
+    using var client = CreateClient();
+
+    var response = await client.GetAsync($"/api/orders/{Guid.NewGuid()}");
+
+    Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
 }
 ```
 
