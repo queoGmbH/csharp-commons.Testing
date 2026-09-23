@@ -67,7 +67,7 @@ namespace Build
                 }
                 if (context.Environment.Platform.IsWindows())
                 {
-                    context.ReportGenerator(new GlobPattern($"{testArtifactsPath}/*.coverage.net8.0.xml"), Path.Combine(testArtifactsPath, "coverage"), new ReportGeneratorSettings()
+                    context.ReportGenerator(new GlobPattern($"{testArtifactsPath}/*.coverage*.xml"), Path.Combine(testArtifactsPath, "coverage"), new ReportGeneratorSettings()
                     {
                         ReportTypes = new List<ReportGeneratorReportType>()
                         {
