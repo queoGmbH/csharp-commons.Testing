@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using Build.Common.Builder;
 using Cake.Common.Build;
 using Cake.Common.Build.AzurePipelines.Data;
 using Cake.Common.Diagnostics;
+using Cake.Common.IO;
 using Cake.Common.Tools.DotNet;
 using Cake.Common.Tools.DotNet.Test;
 using Cake.Common.Tools.ReportGenerator;
@@ -32,24 +32,16 @@ namespace Build
             string testArtifactsPath = Path.Combine(context.Environment.WorkingDirectory.FullPath,
                 $"{context.General.ArtifactsDir}.tests");
 
+            context.CleanDirectory(testArtifactsPath);
+
             try
             {
                 foreach (KeyValuePair<string, string> nameAndPath in testProjects)
                 {
-                    string coverletArgs = new DotNetTestCoverletParameterBuilder()
-                    {
-                        CollectCoverage = true,
-                        CoverletOutputFormat = "opencover",
-                        CoverletOutput = $"{testArtifactsPath}/{nameAndPath.Key}.coverage.xml",
-                        Exclude = new List<string> {
-                            "[*.Tests?]*" /* test projects */
-                        },
-                        ExcludeByFile = new List<string>
-                        {
-                        }
-                    };
-
-                    context.Information($"Coverlet args: {coverletArgs}");
+                    const string runSettingsOverrides =
+                        "-- " +
+                        "DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover " +
+                        "DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Exclude=\"[*.Tests?]*\"";
 
                     context.DotNetTest(
                         nameAndPath.Value,
@@ -58,16 +50,18 @@ namespace Build
                             VSTestReportPath =
                                 Path.Combine(testArtifactsPath, $"{nameAndPath.Key}.TestResult.xml"),
                             Configuration = context.Tests.BuildConfig,
+                            Collectors = new List<string> { "XPlat Code Coverage" },
+                            ResultsDirectory = new DirectoryPath(Path.Combine(testArtifactsPath, nameAndPath.Key)),
                             ArgumentCustomization = delegate (ProcessArgumentBuilder argument)
                             {
-                                argument.Append(new TextArgument(coverletArgs));
+                                argument.Append(new TextArgument(runSettingsOverrides));
                                 return argument;
                             }
                         });
                 }
                 if (context.Environment.Platform.IsWindows())
                 {
-                    context.ReportGenerator(new GlobPattern($"{testArtifactsPath}/*.coverage*.xml"), Path.Combine(testArtifactsPath, "coverage"), new ReportGeneratorSettings()
+                    context.ReportGenerator(new GlobPattern($"{testArtifactsPath}/**/coverage.opencover.xml"), Path.Combine(testArtifactsPath, "coverage"), new ReportGeneratorSettings()
                     {
                         ReportTypes = new List<ReportGeneratorReportType>()
                         {
